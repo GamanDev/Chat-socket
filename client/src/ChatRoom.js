@@ -1,31 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import Message from "./Message";
 
 const ChatRoom = ({ room, author, socket }) => {
-  const [text, setText] = useState("");
-  const [messagesReceived, setMessagesReceived] = useState([]);
-  console.log(messagesReceived);
+  // const [text, setText] = useState("");
+  const [messages, setMessages] = useState([]);
+  console.log(messages);
+  const inputText = useRef(null);
+
+  const addMessage = useCallback(
+    (msg) => setMessages((state) => [...state, msg]),
+    []
+  );
 
   async function sendMessage() {
-    const messageObj = {
+    const msg = {
       room: room,
       author: author,
-      message: text,
+      message: inputText.current.value,
+      // message: text,
     };
-
-    await socket.emit("send_message", messageObj);
-    setMessagesReceived((prev) => [...prev, messageObj]);
-    setText("");
+    if (msg.message) {
+      socket.emit("send_message", msg);
+      addMessage(msg);
+      // setText("");
+      inputText.current.value = "";
+    }
   }
 
   useEffect(() => {
-    const listener = (data) => {
-      setMessagesReceived((prev) => [...prev, data]);
-    };
+    socket.on("receive_message", addMessage);
 
-    socket.on("receive_message", listener);
-
-    return () => socket.off("receive_message", listener);
+    return () => socket.off("receive_message", addMessage);
   }, [socket]);
+
+  function onRefButtonClick() {
+    console.log(refButton.current.value);
+  }
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -39,16 +49,7 @@ const ChatRoom = ({ room, author, socket }) => {
           border: "2px solid lightgray",
           margin: "0 auto",
         }}>
-        {messagesReceived.map((message) => {
-          return (
-            <div className='chatWindow'>
-              <div className={author === message.author ? "You" : "NotYou"}>
-                {message.message}
-                <div className='author'>Written by : {message.author}</div>
-              </div>
-            </div>
-          );
-        })}
+        <Message messages={messages} author={author} />
       </div>
       <div
         style={{
@@ -60,8 +61,9 @@ const ChatRoom = ({ room, author, socket }) => {
         <input
           type='text'
           style={{ width: "100%" }}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          // value={text}
+          // onChange={(e) => setText(e.target.value)}
+          ref={inputText}
         />
         <button onClick={sendMessage} style={{ marginLeft: "auto" }}>
           Send Message

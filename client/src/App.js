@@ -16,15 +16,18 @@ const App = () => {
 
   return (
     <div>
-      {!roomAccept ? (
+      {roomAccept ? (
+        <ChatRoom room={room} author={author} socket={socket} />
+      ) : (
         <form
           onSubmit={enterRoom}
           style={{
             textAlign: "center",
           }}>
           <div>
-            <label htmlFor='Room'>Room : </label>
+            <label htmlFor='room'>Room : </label>
             <input
+              id='room'
               type='number'
               value={room}
               onChange={(e) => setRoom(e.target.value)}
@@ -33,8 +36,9 @@ const App = () => {
             />
           </div>
           <div>
-            <label htmlFor='Author'>Author : </label>
+            <label htmlFor='author'>Author : </label>
             <input
+              id='author'
               type='text'
               placeholder='Ivan Bliminse...'
               value={author}
@@ -44,8 +48,6 @@ const App = () => {
           </div>
           <button>Enter</button>
         </form>
-      ) : (
-        <ChatRoom room={room} author={author} socket={socket} />
       )}
     </div>
   );
