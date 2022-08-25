@@ -5,10 +5,10 @@ const Message = ({ messages, author }) => {
     <div>
       {messages.map((message) => {
         return (
-          <div className='chatWindow'>
+          <div className="chatWindow">
             <div className={author === message.author ? "You" : "NotYou"}>
               {message.message}
-              <div className='author'>Written by : {message.author}</div>
+              <div className="author">Written by : {message.author}</div>
             </div>
           </div>
         );

@@ -4,7 +4,6 @@ import Message from "./Message";
 const ChatRoom = ({ room, author, socket }) => {
   // const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
-  console.log(messages);
   const inputText = useRef(null);
 
   const addMessage = useCallback(
@@ -33,39 +32,22 @@ const ChatRoom = ({ room, author, socket }) => {
     return () => socket.off("receive_message", addMessage);
   }, [socket]);
 
-  function onRefButtonClick() {
-    console.log(refButton.current.value);
-  }
-
   return (
-    <div style={{ textAlign: "center" }}>
-      <h2>Chat Window</h2>
-      <div>Room number - {room}</div>
-      <div
-        style={{
-          width: "400px",
-          height: "400px",
-          overflowY: "scroll",
-          border: "2px solid lightgray",
-          margin: "0 auto",
-        }}>
+    <div>
+      <h2 className="pt-20 text-white">Chat Window</h2>
+      <div className="mt-2 text-white">Room number - {room}</div>
+      <div className="w-96 h-96 overflow-y-scroll border-4 border-lightfray-200 mt-20 mx-auto bg-teal-200/20">
         <Message messages={messages} author={author} />
       </div>
-      <div
-        style={{
-          width: "405px",
-          height: "50px",
-          margin: "0 auto",
-          display: "flex",
-        }}>
+      <div className="w-96 h-15 my-0 mx-auto flex border-4 box-border shadow-2xl">
         <input
-          type='text'
-          style={{ width: "100%" }}
+          type="text"
+          className="w-full"
           // value={text}
           // onChange={(e) => setText(e.target.value)}
           ref={inputText}
         />
-        <button onClick={sendMessage} style={{ marginLeft: "auto" }}>
+        <button onClick={sendMessage} className="bg-teal-300">
           Send Message
         </button>
       </div>
